@@ -4,13 +4,15 @@ import {
   Typography,
   makeStyles,
   Box,
-  Button
+  Button,
+  Link as MuiLink
 } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { userGetOne } from 'services';
 import { withAppStore } from 'store';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
+import Link from 'next/link';
 
 const useStyles = makeStyles(theme => ({
   main: {
@@ -19,6 +21,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
+    width: '500px',
+    maxWidth: '100%',
+    margin: '0 auto',
 
     '& > form': {
       flexGrow: 1,
@@ -87,7 +92,6 @@ const Login = props => {
         props.appStore.actions.setUser(res.data, () => router.push('/lists'));
       })
       .catch(err => {
-        // TODO: inline feedback no form
         console.log(err);
         console.log(err.response);
         alert(err);
@@ -137,7 +141,10 @@ const Login = props => {
               onChange={handleChange}
             />
           </Box>
-          <Box ml="auto">
+          <Box display="flex" justifyContent="space-between" width="100%">
+            <Link href="/register">
+              <MuiLink style={{ cursor: 'pointer' }}>Criar conta</MuiLink>
+            </Link>
             <Button type="submit" variant="contained" color="primary">
               Entrar
             </Button>

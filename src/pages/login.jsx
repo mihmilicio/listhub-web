@@ -3,14 +3,14 @@ import {
   Toolbar,
   Typography,
   makeStyles,
-  TextField,
   Box,
   Button
 } from '@material-ui/core';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { userGetOne } from 'services';
 import { withAppStore } from 'store';
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 const useStyles = makeStyles(theme => ({
   main: {
@@ -30,11 +30,50 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Login = props => {
+  const [formValues, setFormValues] = useState({
+    username: '',
+    userId: ''
+  });
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    ValidatorForm.addValidationRule('idExists', value => {
+      if (user === null || user?.id != value) {
+        return userGetOne(value)
+          .then(res => {
+            setUser(res.data);
+            return true;
+          })
+          .catch(err => {
+            if (err.response) {
+              if (err.response.status === 404) {
+                return false;
+              }
+            } else {
+              alert('Internal error');
+              return false;
+            }
+          });
+      }
+      return true;
+    });
+
+    return () => {
+      ValidatorForm.removeValidationRule('idExists');
+    };
+  }, []);
+
   const classes = useStyles();
   const router = useRouter();
 
+  const handleChange = e => {
+    setFormValues(prevFormValues => ({
+      ...prevFormValues,
+      [e.target.name]: e.target.value
+    }));
+  };
+
   const onSubmit = async e => {
-    e.preventDefault();
     const formData = new FormData(e.target);
     const formDataObj = {};
     formData.forEach((value, key) => (formDataObj[key] = value));
@@ -42,11 +81,15 @@ const Login = props => {
     await userGetOne(formDataObj.userId)
       .then(res => {
         console.log(res);
+        const data = res.data;
+        data.userId = data.id;
+        delete data.id;
         props.appStore.actions.setUser(res.data, () => router.push('/lists'));
       })
       .catch(err => {
         // TODO: inline feedback no form
         console.log(err);
+        console.log(err.response);
         alert(err);
       });
   };
@@ -61,25 +104,37 @@ const Login = props => {
         </Toolbar>
       </AppBar>
       <main className={classes.main}>
-        <form noValidate autoComplete="off" onSubmit={onSubmit}>
+        <ValidatorForm
+          onSubmit={onSubmit}
+          onError={errors => console.log(errors)}
+          autoComplete="off"
+        >
           <Box mb={2}>
-            <TextField
+            <TextValidator
               label="Username"
               name="username"
               id="username"
               type="text"
               variant="filled"
               fullWidth
+              validators={['required']}
+              errorMessages={['Insira um username']}
+              value={formValues.username}
+              onChange={handleChange}
             />
           </Box>
           <Box mb={2}>
-            <TextField
+            <TextValidator
               label="UserID"
               name="userId"
               id="userId"
               type="number"
               variant="filled"
               fullWidth
+              validators={['required', 'idExists']}
+              errorMessages={['Insira um userId', 'UserID não encontrado']}
+              value={formValues.userId}
+              onChange={handleChange}
             />
           </Box>
           <Box ml="auto">
@@ -87,7 +142,7 @@ const Login = props => {
               Entrar
             </Button>
           </Box>
-        </form>
+        </ValidatorForm>
       </main>
     </>
   );

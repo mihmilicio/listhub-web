@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import AppContext from 'store/context';
 
-const freeRoutes = ['/login'];
+const freeRoutes = ['/login', '/register'];
 
 export const useAuthCheck = isAuthCallback => {
   const [isAuth, setIsAuth] = useState(false);
@@ -24,6 +24,6 @@ export const useAuthCheck = isAuthCallback => {
 
   return {
     router,
-    isAuth,
+    isAuth
   };
 };

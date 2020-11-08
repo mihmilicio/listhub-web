@@ -8,8 +8,10 @@ import {
   makeStyles,
   Box,
   Button,
-  Link as MuiLink
+  Link as MuiLink,
+  Snackbar
 } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import Link from 'next/link';
 import {
@@ -17,6 +19,8 @@ import {
   MuiPickersUtilsProvider
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import { formatISO, parse } from 'date-fns';
+import { userCreate } from 'services';
 
 const useStyles = makeStyles(theme => ({
   main: {
@@ -46,6 +50,7 @@ const Register = props => {
     birthday: null,
     password: ''
   });
+  const [success, setSuccess] = useState(false);
   const classes = useStyles();
   const router = useRouter();
 
@@ -60,7 +65,27 @@ const Register = props => {
     const formData = new FormData(e.target);
     const formDataObj = {};
     formData.forEach((value, key) => (formDataObj[key] = value));
+    formDataObj.birthday = formatISO(
+      parse(formDataObj.birthday, 'dd/MM/yyyy', new Date()),
+      { representation: 'date' }
+    );
     console.log(formDataObj);
+    await userCreate(formDataObj)
+      .then(res => {
+        console.log(res);
+        const data = res.data;
+        data.userId = data.id;
+        delete data.id;
+        setSuccess(true);
+        setTimeout(() => {
+          props.appStore.actions.setUser(res.data, () => router.push('/lists'));
+        }, 5000);
+      })
+      .catch(err => {
+        console.log(err);
+        console.log(err.response);
+        alert(err);
+      });
   };
 
   return (
@@ -113,7 +138,6 @@ const Register = props => {
           <Box mb={2}>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker
-                margin="normal"
                 id="birthday"
                 name="birthday"
                 inputVariant="filled"
@@ -168,6 +192,11 @@ const Register = props => {
           </Box>
         </ValidatorForm>
       </main>
+      <Snackbar open={success} autoHideDuration={6000}>
+        <Alert severity="success" elevation={6} variant="filled">
+          Usuário criado com sucesso! Você será redirecionado...
+        </Alert>
+      </Snackbar>
     </>
   );
 };

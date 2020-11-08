@@ -6,3 +6,11 @@ export function userGetOne(userId) {
     method: 'GET'
   });
 }
+
+export function userCreate(data) {
+  return api({
+    url: `/user`,
+    method: 'POST',
+    data
+  });
+}

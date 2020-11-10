@@ -21,3 +21,11 @@ export function listGetAll(userId) {
     method: 'GET'
   });
 }
+
+export function listCreate(data) {
+  return api({
+    url: '/checklist',
+    method: 'POST',
+    data
+  });
+}

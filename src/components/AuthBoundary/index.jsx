@@ -2,9 +2,9 @@ import { useAuthCheck } from 'hooks/useAuthCheck';
 import { withAppStore } from 'store';
 
 const AuthBoundary = props => {
-  useAuthCheck();
+  const { isAuth } = useAuthCheck();
 
-  return props.children;
+  return isAuth ? props.children : null;
 };
 
 export default withAppStore(AuthBoundary);

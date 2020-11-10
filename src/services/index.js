@@ -14,3 +14,10 @@ export function userCreate(data) {
     data
   });
 }
+
+export function listGetAll(userId) {
+  return api({
+    url: `/checklist/user/${userId}`,
+    method: 'GET'
+  });
+}

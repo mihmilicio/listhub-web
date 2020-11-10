@@ -11,7 +11,8 @@ export const useAuthCheck = isAuthCallback => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!freeRoutes.includes(router.pathname) && !!appStore?.state) {
+    const isFree = freeRoutes.includes(router.pathname);
+    if (!isFree && !!appStore?.state) {
       if (appStore.state.userId === null) {
         setIsAuth(false);
         router.push('/login');
@@ -19,6 +20,8 @@ export const useAuthCheck = isAuthCallback => {
         isAuthCallback && isAuthCallback();
         setIsAuth(true);
       }
+    } else if (isFree) {
+      setIsAuth(true);
     }
   }, [router.pathname, appStore?.state.userId]);
 

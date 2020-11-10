@@ -46,7 +46,6 @@ const Lists = props => {
       await listGetAll(props.appStore.state.userId)
         .then(res => {
           setLists(res.data);
-          props.appStore.actions.setLists(res.data);
         })
         .catch(err => {
           if (err.response?.status === 404) {

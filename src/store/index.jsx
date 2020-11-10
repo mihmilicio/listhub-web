@@ -8,8 +8,11 @@ export default class AppStore extends React.PureComponent {
     this.state = Object.assign({
       userId: null,
       name: null,
-      lists: []
-    })
+      currentList: {
+        id: null,
+        name: null
+      }
+    });
   }
 
   render() {
@@ -19,17 +22,20 @@ export default class AppStore extends React.PureComponent {
           state: this.state,
           actions: {
             setUser: (data, callback = () => {}) => {
-              this.setState((oldState) => ({ ...oldState, ...data }), callback);
+              this.setState(oldState => ({ ...oldState, ...data }), callback);
             },
-            setLists: (lists, callback = () => {}) => {
-              this.setState((oldState) => ({ ...oldState, lists }), callback);
+            setList: (list, callback = () => {}) => {
+              this.setState(
+                oldState => ({ ...oldState, currentList: { ...list } }),
+                callback
+              );
             }
           }
         }}
       >
         {this.props.children}
       </AppContext.Provider>
-    )
+    );
   }
 }
 
@@ -41,6 +47,6 @@ export function withAppStore(Component) {
           <Component {...props} appStore={{ state, actions }} />
         )}
       </AppContext.Consumer>
-    )
-  }
+    );
+  };
 }

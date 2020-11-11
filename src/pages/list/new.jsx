@@ -109,7 +109,7 @@ const NewList = props => {
   };
 
   const onSubmit = async e => {
-    const formDataObj = { ...formValues };
+    const formDataObj = Object.assign({}, formValues);
     Object.keys(formDataObj).forEach(key => {
       if (!formDataObj[key]) {
         formDataObj[key] = null;

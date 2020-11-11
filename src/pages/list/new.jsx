@@ -130,7 +130,7 @@ const NewList = props => {
           props.appStore.actions.setList(data, () =>
             router.push(`/list/${data.id}`)
           );
-        }, 5000);
+        }, 3000);
       })
       .catch(err => {
         console.log(err);

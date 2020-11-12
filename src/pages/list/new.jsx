@@ -109,6 +109,8 @@ const NewList = props => {
   };
 
   const onSubmit = async e => {
+    setFormStatus('info');
+    setFormFeedback('Enviando...');
     const formDataObj = Object.assign({}, formValues);
     Object.keys(formDataObj).forEach(key => {
       if (!formDataObj[key]) {
@@ -124,8 +126,8 @@ const NewList = props => {
       .then(res => {
         console.log(res);
         const data = res.data;
-        setFormFeedback('Lista criada com sucesso! Você será redirecionado...');
         setFormStatus('success');
+        setFormFeedback('Lista criada com sucesso! Você será redirecionado...');
         setTimeout(() => {
           props.appStore.actions.setList(data, () =>
             router.push(`/list/${data.id}`)
@@ -135,8 +137,8 @@ const NewList = props => {
       .catch(err => {
         console.log(err);
         console.log(err.response);
-        setFormFeedback('Lista criada com sucesso! Você será redirecionado...');
         setFormStatus('error');
+        setFormFeedback('Ops... Ocorreu um erro...');
       });
   };
 
@@ -292,7 +294,11 @@ const NewList = props => {
         </ValidatorForm>
       </main>
 
-      <Snackbar open={formStatus != null} autoHideDuration={6000}>
+      <Snackbar
+        open={formFeedback.length > 0}
+        autoHideDuration={6000}
+        onClose={() => setFormFeedback('')}
+      >
         <Alert severity={formStatus} elevation={6} variant="filled">
           {formFeedback}
         </Alert>

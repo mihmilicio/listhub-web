@@ -5,14 +5,16 @@ import {
   makeStyles,
   Box,
   Button,
-  Link as MuiLink
+  Link as MuiLink,
+  Snackbar
 } from '@material-ui/core';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { userGetOne } from 'services';
 import { withAppStore } from 'store';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import Link from 'next/link';
+import { Alert } from '@material-ui/lab';
 
 const useStyles = makeStyles(theme => ({
   main: {
@@ -39,34 +41,8 @@ const Login = props => {
     username: '',
     userId: ''
   });
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    ValidatorForm.addValidationRule('idExists', value => {
-      if (user === null || user?.id != value) {
-        return userGetOne(value)
-          .then(res => {
-            setUser(res.data);
-            return true;
-          })
-          .catch(err => {
-            if (err.response) {
-              if (err.response.status === 404) {
-                return false;
-              }
-            } else {
-              alert('Internal error');
-              return false;
-            }
-          });
-      }
-      return true;
-    });
-
-    return () => {
-      ValidatorForm.removeValidationRule('idExists');
-    };
-  }, []);
+  const [formStatus, setFormStatus] = useState(null);
+  const [formFeedback, setFormFeedback] = useState('');
 
   const classes = useStyles();
   const router = useRouter();
@@ -79,6 +55,8 @@ const Login = props => {
   };
 
   const onSubmit = async e => {
+    setFormStatus('info');
+    setFormFeedback('Enviando...');
     const formData = new FormData(e.target);
     const formDataObj = {};
     formData.forEach((value, key) => (formDataObj[key] = value));
@@ -94,7 +72,12 @@ const Login = props => {
       .catch(err => {
         console.log(err);
         console.log(err.response);
-        alert(err);
+        if (err?.response?.status === 404) {
+          setFormStatus('error');
+          setFormFeedback('UserID não encontrado...');
+        } else {
+          alert(err);
+        }
       });
   };
 
@@ -135,8 +118,8 @@ const Login = props => {
               type="number"
               variant="filled"
               fullWidth
-              validators={['required', 'idExists']}
-              errorMessages={['Insira um userId', 'UserID não encontrado']}
+              validators={['required']}
+              errorMessages={['Insira um userId']}
               value={formValues.userId}
               onChange={handleChange}
             />
@@ -151,6 +134,15 @@ const Login = props => {
           </Box>
         </ValidatorForm>
       </main>
+      <Snackbar
+        open={formFeedback.length > 0}
+        autoHideDuration={6000}
+        onClose={() => setFormFeedback('')}
+      >
+        <Alert severity={formStatus} elevation={6} variant="filled">
+          {formFeedback}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

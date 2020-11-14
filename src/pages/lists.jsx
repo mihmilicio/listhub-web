@@ -3,13 +3,13 @@ import {
   Divider,
   Fab,
   List,
-  ListItem,
   ListItemText,
   makeStyles,
   Toolbar,
   Typography
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import ListItemLink from 'components/ListItemLink';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
@@ -28,14 +28,6 @@ const useStyles = makeStyles(theme => ({
     right: theme.spacing(2)
   }
 }));
-
-function ListItemLink({ href, ...props }) {
-  return (
-    <Link href={href}>
-      <ListItem button component="a" {...props} />
-    </Link>
-  );
-}
 
 const Lists = props => {
   const [lists, setLists] = useState(null);

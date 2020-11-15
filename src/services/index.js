@@ -51,3 +51,11 @@ export function itemUpdate(data) {
     data
   });
 }
+
+export function itemCreate(data) {
+  return api({
+    url: '/item',
+    method: 'POST',
+    data
+  });
+}

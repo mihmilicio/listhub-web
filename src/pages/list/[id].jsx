@@ -13,12 +13,13 @@ import {
   ListItemText,
   makeStyles,
   Toolbar,
-  Typography
+  Typography,
+  useTheme
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import AddIcon from '@material-ui/icons/Add';
+import SettingsIcon from '@material-ui/icons/Settings';
 import { itemGetAll, itemUpdate, listGetOne } from 'services';
-import ListItemLink from 'components/ListItemLink';
 import Link from 'next/link';
 
 const useStyles = makeStyles(theme => ({
@@ -26,6 +27,9 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     display: 'flex',
     flexDirection: 'column'
+  },
+  barTitle: {
+    flexGrow: 1
   },
   backButton: {
     marginRight: theme.spacing(2)
@@ -42,6 +46,7 @@ const ListView = props => {
   const classes = useStyles();
   const router = useRouter();
   const { id } = router.query;
+  const theme = useTheme();
 
   const [list, setList] = useState(null);
   const [items, setItems] = useState(null);
@@ -137,7 +142,12 @@ const ListView = props => {
 
   return (
     <>
-      <AppBar position="static">
+      <AppBar
+        position="static"
+        style={{
+          backgroundColor: !!list?.color ? `#${list.color}` : theme.primary
+        }}
+      >
         <Toolbar>
           <IconButton
             edge="start"
@@ -148,12 +158,26 @@ const ListView = props => {
           >
             <ArrowBackIcon />
           </IconButton>
-          <Typography variant="h6" component="h1">
+          <Typography variant="h6" component="h1" className={classes.barTitle}>
             {list?.name}
           </Typography>
+          <Link href={`/list/edit/${list?.id}`}>
+            <IconButton
+              aria-label="configurações da lista"
+              color="inherit"
+              component="a"
+            >
+              <SettingsIcon />
+            </IconButton>
+          </Link>
         </Toolbar>
       </AppBar>
       <main className={classes.main}>
+        {!!list?.description && (
+          <Box p={2} mb={1}>
+            <Typography variant="subtitle2">{list.description}</Typography>
+          </Box>
+        )}
         {items?.length > 0 && (
           <List style={{ background: 'white' }}>
             {items.map((item, index) => {

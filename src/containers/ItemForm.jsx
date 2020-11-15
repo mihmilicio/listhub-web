@@ -20,6 +20,12 @@ import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { Alert } from '@material-ui/lab';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import {
+  KeyboardDatePicker,
+  KeyboardDateTimePicker,
+  MuiPickersUtilsProvider
+} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 const useStyles = makeStyles(theme => ({
   main: {
@@ -62,11 +68,15 @@ const ItemForm = ({ initialValues, op, currentList }) => {
     }));
   };
 
-  const handleAttrChange = (e, index) => {
+  const handleAttrChange = (e, index, isCheckbox = false) => {
     setFormValues(prevFormValues => {
       const newValues = { ...prevFormValues };
       if (newValues.attributes[index]) {
-        newValues.attributes[index].value = e.target.value;
+        newValues.attributes[index].value = isCheckbox
+          ? e.target.checked
+          : e?.target?.value != undefined
+          ? e?.target?.value
+          : e;
       }
 
       return newValues;
@@ -231,22 +241,63 @@ const ItemForm = ({ initialValues, op, currentList }) => {
                     </Box>
                   );
                 case 3:
-                  <Box mb={2} key={index}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={formValues.attributes[index]?.value}
-                          onChange={e => handleAttrChange(e, index)}
-                          name={`attribute-${index}`}
-                        />
-                      }
-                      label={attr.title}
-                    />
-                  </Box>;
+                  return (
+                    <Box mb={2} key={index}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={formValues.attributes[index]?.value}
+                            onChange={e => handleAttrChange(e, index, true)}
+                            name={`attribute-${index}`}
+                          />
+                        }
+                        label={attr.title}
+                      />
+                    </Box>
+                  );
                 case 4:
-                  return <p key={index}>date</p>;
+                  return (
+                    <Box mb={2} key={index}>
+                      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <KeyboardDatePicker
+                          id={`attribute-${index}`}
+                          name={`attribute-${index}`}
+                          inputVariant="filled"
+                          fullWidth
+                          label={attr.title}
+                          format="dd/MM/yyyy"
+                          invalidDateMessage="Formato de data inválido"
+                          value={formValues.attributes[index]?.value}
+                          onChange={e => handleAttrChange(e, index)}
+                          KeyboardButtonProps={{
+                            'aria-label': `Alterar ${attr.title}`
+                          }}
+                        />
+                      </MuiPickersUtilsProvider>
+                    </Box>
+                  );
                 case 5:
-                  return <p key={index}>datetime</p>;
+                  return (
+                    <Box mb={2} key={index}>
+                      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <KeyboardDateTimePicker
+                          id={`attribute-${index}`}
+                          name={`attribute-${index}`}
+                          inputVariant="filled"
+                          fullWidth
+                          label={attr.title}
+                          ampm={false}
+                          format="dd/MM/yyyy HH:mm"
+                          invalidDateMessage="Formato de data e hora inválido"
+                          value={formValues.attributes[index]?.value}
+                          onChange={e => handleAttrChange(e, index)}
+                          KeyboardButtonProps={{
+                            'aria-label': `Alterar ${attr.title}`
+                          }}
+                        />
+                      </MuiPickersUtilsProvider>
+                    </Box>
+                  );
               }
             })}
 

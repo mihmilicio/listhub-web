@@ -1,4 +1,5 @@
 import ItemForm from 'containers/ItemForm';
+import { defaultValues } from 'helpers/typeEnums';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { itemGetOne } from 'services';
@@ -22,7 +23,7 @@ const ItemView = props => {
         newData.attributes.push({
           Item_id: parseInt(id),
           AttributeDefinition_id: attrDef.id,
-          value: '',
+          value: defaultValues[attrDef.type],
           op: 'C',
           title: attrDef.title,
           type: attrDef.type,
@@ -41,6 +42,9 @@ const ItemView = props => {
           const data = res.data;
           data.attributes.forEach(attr => {
             attr.op = 'U';
+            if (attr.type == 3) {
+              attr.value = !!attr.value;
+            }
           });
           const newData = addMissingDefs(data);
           console.log(newData);

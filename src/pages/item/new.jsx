@@ -1,4 +1,5 @@
 import ItemForm from 'containers/ItemForm';
+import { defaultValues } from 'helpers/typeEnums';
 import React, { useEffect, useState } from 'react';
 import { withAppStore } from 'store';
 
@@ -13,11 +14,12 @@ const NewItem = props => {
   useEffect(() => {
     if (props.appStore?.state?.currentList.attributeDefinitions) {
       const newValues = { ...initialValues };
-      props.appStore?.state?.currentList.attributeDefinitions.forEach(
+      props.appStore.state.currentList.attributeDefinitions.forEach(
         (attrDef, index) => {
+          console.log(attrDef.type);
           newValues.attributes.push({
             AttributeDefinition_id: attrDef.id,
-            value: '',
+            value: defaultValues[attrDef.type],
             op: 'C',
             title: attrDef.title,
             type: attrDef.type,
@@ -26,6 +28,7 @@ const NewItem = props => {
         }
       );
       setInitialValues(newValues);
+      console.log(newValues);
     }
   }, [props.appStore?.state?.currentList]);
 

@@ -29,3 +29,25 @@ export function listCreate(data) {
     data
   });
 }
+
+export function listGetOne(listId) {
+  return api({
+    url: `/checklist/${listId}`,
+    method: 'GET'
+  });
+}
+
+export function itemGetAll(listId) {
+  return api({
+    url: `/item/checklist/${listId}`,
+    method: 'GET'
+  });
+}
+
+export function itemUpdate(data) {
+  return api({
+    url: `/item/${data.id}`,
+    method: 'PUT',
+    data
+  });
+}

@@ -2,6 +2,7 @@ import {
   AppBar,
   Divider,
   Fab,
+  IconButton,
   List,
   ListItemText,
   makeStyles,
@@ -9,6 +10,7 @@ import {
   Typography
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import LogoutIcon from '@material-ui/icons/ExitToApp';
 import ListItemLink from 'components/ListItemLink';
 import Link from 'next/link';
 import React, { useState } from 'react';
@@ -21,6 +23,9 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     display: 'flex',
     flexDirection: 'column'
+  },
+  barTitle: {
+    flexGrow: 1
   },
   fab: {
     position: 'absolute',
@@ -54,17 +59,25 @@ const Lists = props => {
       name: null,
       attributeDefinitions: []
     });
-    fetchLists();
+    if (props.appStore?.state?.userId) {
+      fetchLists();
+    }
   }, [props.appStore?.state?.userId]);
 
-  //TODO: header com logoff
   return (
     <>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="h1">
+          <Typography variant="h6" component="h1" className={classes.barTitle}>
             Minhas listas
           </Typography>
+          <IconButton
+            aria-label="fazer logout da aplicação"
+            color="inherit"
+            onClick={() => props.appStore.actions.clear()}
+          >
+            <LogoutIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <main className={classes.main}>

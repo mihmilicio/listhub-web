@@ -33,6 +33,20 @@ export default class AppStore extends React.PureComponent {
                 }),
                 callback
               );
+            },
+            clear: (callback = () => {}) => {
+              this.setState(
+                Object.assign({
+                  userId: null,
+                  name: null,
+                  currentList: {
+                    id: null,
+                    name: null,
+                    attributeDefinitions: []
+                  }
+                }),
+                callback
+              );
             }
           }
         }}

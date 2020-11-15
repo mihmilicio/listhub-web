@@ -10,7 +10,8 @@ export default class AppStore extends React.PureComponent {
       name: null,
       currentList: {
         id: null,
-        name: null
+        name: null,
+        attributeDefinitions: []
       }
     });
   }
@@ -26,7 +27,10 @@ export default class AppStore extends React.PureComponent {
             },
             setList: (list, callback = () => {}) => {
               this.setState(
-                oldState => ({ ...oldState, currentList: { ...list } }),
+                oldState => ({
+                  ...oldState,
+                  currentList: { ...list }
+                }),
                 callback
               );
             }

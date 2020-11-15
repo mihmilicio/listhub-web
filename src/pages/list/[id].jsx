@@ -68,7 +68,7 @@ const ListView = props => {
           } else {
             console.log(err);
             setList({ id });
-            props.appStore.actions.setList({ id });
+            props.appStore.actions.setList({ id, attributeDefinitions: [] });
             alert('Ocorreu um erro e não conseguimos encontrar sua lista :(');
           }
         });
@@ -93,13 +93,6 @@ const ListView = props => {
     if (id) {
       fetchData();
     }
-
-    return () => {
-      props.appStore.actions.setList({
-        id: null,
-        name: null
-      });
-    };
   }, [id]);
 
   useEffect(() => {
@@ -203,6 +196,7 @@ const ListView = props => {
                         id={`item-title-${item.id}`}
                         primary={item.name}
                         component="a"
+                        style={{ cursor: 'pointer' }}
                       />
                     </Link>
                   </ListItem>

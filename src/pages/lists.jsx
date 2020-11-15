@@ -49,6 +49,11 @@ const Lists = props => {
           }
         });
     };
+    props.appStore.actions.setList({
+      id: null,
+      name: null,
+      attributeDefinitions: []
+    });
     fetchLists();
   }, [props.appStore?.state?.userId]);
 

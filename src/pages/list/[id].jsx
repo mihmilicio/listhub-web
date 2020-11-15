@@ -196,6 +196,7 @@ const ListView = props => {
                         id={`item-title-${item.id}`}
                         primary={item.name}
                         component="a"
+                        style={{ cursor: 'pointer' }}
                       />
                     </Link>
                   </ListItem>

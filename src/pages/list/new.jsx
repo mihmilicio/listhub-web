@@ -121,6 +121,8 @@ const NewList = props => {
     formDataObj.color = formDataObj.color?.substring(1) || null;
     formDataObj.attributes.splice(0, 1); // strip default field
     formDataObj.attributes.forEach(attr => (attr.op = 'C'));
+    formDataObj.attributeDefinitions = [...formDataObj.attributes];
+    delete formDataObj.attributes;
 
     await listCreate(formDataObj)
       .then(res => {

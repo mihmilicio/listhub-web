@@ -63,7 +63,7 @@ const Lists = props => {
         </Toolbar>
       </AppBar>
       <main className={classes.main}>
-        {lists?.length && (
+        {lists?.length > 0 && (
           <List style={{ background: 'white' }}>
             {lists.map((list, index) => {
               return (
@@ -83,9 +83,11 @@ const Lists = props => {
           </List>
         )}
         {lists != null && lists.length === 0 && (
-          <Typography>
-            Nenhuma lista ainda... Comece criando uma nova!
-          </Typography>
+          <Box p={2}>
+            <Typography>
+              Nenhuma lista ainda... Comece criando uma nova!
+            </Typography>
+          </Box>
         )}
         <Link href="/list/new">
           <Fab

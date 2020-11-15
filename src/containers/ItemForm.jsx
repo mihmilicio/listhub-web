@@ -13,7 +13,7 @@ import {
   Snackbar
 } from '@material-ui/core';
 import { useRouter } from 'next/router';
-import { itemCreate, itemUpdate } from 'services';
+import { itemCreate, itemDelete, itemUpdate } from 'services';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
@@ -59,6 +59,30 @@ const ItemForm = ({ initialValues, op, currentList }) => {
   useEffect(() => {
     setFormValues(Object.assign({}, initialValues));
   }, [initialValues]);
+
+  const deleteItem = async () => {
+    if (confirm('Tem certeza que deseja exluir esse item?')) {
+      setFormStatus('info');
+      setFormFeedback('Excluindo...');
+
+      await itemDelete(initialValues.id)
+        .then(res => {
+          setFormStatus('success');
+          setFormFeedback(
+            'Item exluído com sucesso! Você será redirecionado...'
+          );
+          setTimeout(() => {
+            router.push(`/list/${currentList.id}`);
+          }, 3000);
+        })
+        .catch(err => {
+          console.log(err);
+          console.log(err.response);
+          setFormStatus('error');
+          setFormFeedback('Ops... Ocorreu um erro ao deletar seu item...');
+        });
+    }
+  };
 
   const handleChange = (e, key) => {
     setFormValues(prevFormValues => ({
@@ -154,7 +178,7 @@ const ItemForm = ({ initialValues, op, currentList }) => {
             <IconButton
               aria-label="deletar item"
               color="inherit"
-              onClick={() => {}}
+              onClick={deleteItem}
             >
               <DeleteIcon />
             </IconButton>

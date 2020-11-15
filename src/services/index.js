@@ -66,3 +66,10 @@ export function itemGetOne(itemId) {
     method: 'GET'
   });
 }
+
+export function itemDelete(itemId) {
+  return api({
+    url: `/item/${itemId}`,
+    method: 'DELETE'
+  });
+}

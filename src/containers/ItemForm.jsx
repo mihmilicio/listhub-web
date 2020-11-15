@@ -19,6 +19,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { Alert } from '@material-ui/lab';
 import { format, parseISO } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 const useStyles = makeStyles(theme => ({
   main: {
@@ -56,22 +57,15 @@ const ItemForm = ({ initialValues, op, currentList }) => {
   const handleChange = (e, key) => {
     setFormValues(prevFormValues => ({
       ...prevFormValues,
-      [key || e.target.name]: e?.target?.value || e
+      [key || e.target.name]:
+        e?.target?.value != undefined ? e?.target?.value : e
     }));
   };
 
-  const handleAttrChange = (e, index, attrDefId) => {
+  const handleAttrChange = (e, index) => {
     setFormValues(prevFormValues => {
       const newValues = { ...prevFormValues };
       if (newValues.attributes[index]) {
-        newValues.attributes[index].value = e.target.value;
-      } else {
-        //undefined (new index)
-        newValues.attributes[index] = {
-          value: '',
-          op: 'C',
-          AttributeDefinition_id: attrDefId
-        };
         newValues.attributes[index].value = e.target.value;
       }
 
@@ -162,7 +156,9 @@ const ItemForm = ({ initialValues, op, currentList }) => {
           <Box mb={1}>
             <Typography variant="subtitle2">
               Criado em:{' '}
-              {(format(parseISO(initialValues.creationDate)), 'ccc d LLLL y')}
+              {format(parseISO(initialValues.creationDate), 'ccc, d LLLL y', {
+                locale: ptBR
+              })}
             </Typography>
           </Box>
         )}
@@ -201,21 +197,21 @@ const ItemForm = ({ initialValues, op, currentList }) => {
             />
           </Box>
 
-          {!!currentList?.attributeDefinitions &&
-            currentList.attributeDefinitions.map((attrDef, index) => {
-              switch (attrDef.type) {
+          {!!initialValues.attributes &&
+            initialValues.attributes.map((attr, index) => {
+              switch (attr.type) {
                 case 1: //text
                   return (
                     <Box mb={2} key={index}>
                       <TextField
-                        label={attrDef.title}
-                        name={`attribute-${attrDef.id}`}
-                        id={`attribute-${attrDef.id}`}
+                        label={attr.title}
+                        name={`attribute-${index}`}
+                        id={`attribute-${index}`}
                         type="text"
                         variant="filled"
                         fullWidth
                         value={formValues.attributes[index]?.value || ''}
-                        onChange={e => handleAttrChange(e, index, attrDef.id)}
+                        onChange={e => handleAttrChange(e, index)}
                       />
                     </Box>
                   );
@@ -223,14 +219,14 @@ const ItemForm = ({ initialValues, op, currentList }) => {
                   return (
                     <Box mb={2} key={index}>
                       <TextField
-                        label={attrDef.title}
-                        name={`attribute-${attrDef.id}`}
-                        id={`attribute-${attrDef.id}`}
+                        label={attr.title}
+                        name={`attribute-${index}`}
+                        id={`attribute-${index}`}
                         type="number"
                         variant="filled"
                         fullWidth
                         value={formValues.attributes[index]?.value || ''}
-                        onChange={e => handleAttrChange(e, index, attrDef.id)}
+                        onChange={e => handleAttrChange(e, index)}
                       />
                     </Box>
                   );
@@ -240,11 +236,11 @@ const ItemForm = ({ initialValues, op, currentList }) => {
                       control={
                         <Checkbox
                           checked={formValues.attributes[index]?.value}
-                          onChange={e => handleAttrChange(e, index, attrDef.id)}
-                          name={`attribute-${attrDef.id}`}
+                          onChange={e => handleAttrChange(e, index)}
+                          name={`attribute-${index}`}
                         />
                       }
-                      label={attrDef.title}
+                      label={attr.title}
                     />
                   </Box>;
                 case 4:

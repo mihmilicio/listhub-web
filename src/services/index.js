@@ -59,3 +59,10 @@ export function itemCreate(data) {
     data
   });
 }
+
+export function itemGetOne(itemId) {
+  return api({
+    url: `/item/${itemId}`,
+    method: 'GET'
+  });
+}

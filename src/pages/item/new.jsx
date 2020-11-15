@@ -11,7 +11,6 @@ const NewItem = props => {
   });
 
   useEffect(() => {
-    console.log(props.appStore?.state?.currentList.attributeDefinitions);
     if (props.appStore?.state?.currentList.attributeDefinitions) {
       const newValues = { ...initialValues };
       props.appStore?.state?.currentList.attributeDefinitions.forEach(
@@ -19,7 +18,10 @@ const NewItem = props => {
           newValues.attributes.push({
             AttributeDefinition_id: attrDef.id,
             value: '',
-            op: 'C'
+            op: 'C',
+            title: attrDef.title,
+            type: attrDef.type,
+            position: attrDef.position
           });
         }
       );

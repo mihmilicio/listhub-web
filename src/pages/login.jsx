@@ -98,20 +98,6 @@ const Login = props => {
         >
           <Box mb={2}>
             <TextValidator
-              label="Username"
-              name="username"
-              id="username"
-              type="text"
-              variant="filled"
-              fullWidth
-              validators={['required']}
-              errorMessages={['Insira um username']}
-              value={formValues.username}
-              onChange={handleChange}
-            />
-          </Box>
-          <Box mb={2}>
-            <TextValidator
               label="UserID"
               name="userId"
               id="userId"

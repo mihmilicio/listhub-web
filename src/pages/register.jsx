@@ -57,7 +57,8 @@ const Register = props => {
   const handleChange = (e, key) => {
     setFormValues(prevFormValues => ({
       ...prevFormValues,
-      [key || e.target.name]: e?.target?.value || e
+      [key || e.target.name]:
+        e?.target?.value != undefined ? e?.target?.value : e
     }));
   };
 

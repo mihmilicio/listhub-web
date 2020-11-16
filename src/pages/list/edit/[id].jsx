@@ -17,7 +17,11 @@ const ListEdit = props => {
   useEffect(() => {
     if (props.appStore?.state?.currentList.id) {
       const data = { ...props.appStore.state.currentList };
-      if (data.color == null) data.color = '';
+      if (data.color == null) {
+        data.color = '';
+      } else if (data.color) {
+        data.color = '#' + data.color;
+      }
 
       if (data.description == null) data.description = '';
 

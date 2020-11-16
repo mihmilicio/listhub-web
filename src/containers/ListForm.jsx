@@ -90,7 +90,8 @@ const ListForm = ({ initialValues, op, successCallback = () => {} }) => {
       newValues.attributes[newIndex] = {
         title: '',
         type: 1,
-        position: 1
+        position: 1,
+        op: 'C'
       };
       return newValues;
     });
@@ -122,12 +123,13 @@ const ListForm = ({ initialValues, op, successCallback = () => {} }) => {
       }
     });
     formDataObj.color = formDataObj.color?.substring(1) || null;
-    formDataObj.attributes.splice(0, 1); // strip default field
-    formDataObj.attributes.forEach(attr => (attr.op = 'C'));
     formDataObj.attributeDefinitions = [...formDataObj.attributes];
+    formDataObj.attributeDefinitions.splice(0, 1); // strip default field
     delete formDataObj.attributes;
 
     if (op === 'C') {
+      formDataObj.attributeDefinitions.forEach(attr => (attr.op = 'C'));
+      console.log(formDataObj);
       await listCreate(formDataObj)
         .then(res => {
           console.log(res);
@@ -147,6 +149,7 @@ const ListForm = ({ initialValues, op, successCallback = () => {} }) => {
           setFormFeedback('Ops... Ocorreu um erro...');
         });
     } else if (op === 'U') {
+      console.log(formDataObj);
       await listUpdate(formDataObj)
         .then(res => {
           console.log(res);

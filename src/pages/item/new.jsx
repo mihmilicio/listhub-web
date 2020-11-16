@@ -18,7 +18,7 @@ const NewItem = props => {
         (attrDef, index) => {
           console.log(attrDef.type);
           newValues.attributes.push({
-            AttributeDefinition_id: attrDef.id,
+            attribute_definition_id: attrDef.id,
             value: defaultValues[attrDef.type],
             op: 'C',
             title: attrDef.title,

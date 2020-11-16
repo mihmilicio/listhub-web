@@ -18,11 +18,11 @@ const ItemView = props => {
 
     attrDefs.forEach(attrDef => {
       if (
-        attrs.findIndex(attr => attr.attributeDefinition_id == attrDef.id) < 0
+        attrs.findIndex(attr => attr.attribute_definition_id == attrDef.id) < 0
       ) {
         newData.attributes.push({
-          Item_id: parseInt(id),
-          AttributeDefinition_id: attrDef.id,
+          item_id: parseInt(id),
+          attribute_definition_id: attrDef.id,
           value: defaultValues[attrDef.type],
           op: 'C',
           title: attrDef.title,

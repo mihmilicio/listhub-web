@@ -19,7 +19,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
-import { listCreate, listUpdate } from 'services';
+import { listCreate, listDelete, listUpdate } from 'services';
 import ColorPicker from 'material-ui-color-picker';
 import { Alert } from '@material-ui/lab';
 import { typeNames } from 'helpers/typeEnums';
@@ -56,6 +56,30 @@ const ListForm = ({ initialValues, op, successCallback = () => {} }) => {
   useEffect(() => {
     setFormValues(Object.assign({}, initialValues));
   }, [initialValues]);
+
+  const deleteList = async () => {
+    if (confirm('Tem certeza que deseja exluir essa lista?')) {
+      setFormStatus('info');
+      setFormFeedback('Excluindo...');
+
+      await listDelete(initialValues.id)
+        .then(res => {
+          setFormStatus('success');
+          setFormFeedback(
+            'Lista exluída com sucesso! Você será redirecionado...'
+          );
+          setTimeout(() => {
+            router.push(`/list/${currentList.id}`);
+          }, 3000);
+        })
+        .catch(err => {
+          console.log(err);
+          console.log(err.response);
+          setFormStatus('error');
+          setFormFeedback('Ops... Ocorreu um erro ao deletar sua lista...');
+        });
+    }
+  };
 
   const handleChange = (e, key) => {
     setFormValues(prevFormValues => ({
@@ -189,9 +213,9 @@ const ListForm = ({ initialValues, op, successCallback = () => {} }) => {
           </Typography>
           {op === 'U' && (
             <IconButton
-              aria-label="deletar item"
+              aria-label="deletar lista"
               color="inherit"
-              onClick={() => {}}
+              onClick={deleteList}
             >
               <DeleteIcon />
             </IconButton>

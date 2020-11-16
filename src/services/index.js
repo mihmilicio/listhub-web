@@ -45,6 +45,13 @@ export function listGetOne(listId) {
   });
 }
 
+export function listDelete(listId) {
+  return api({
+    url: `/checklist/${listId}`,
+    method: 'DELETE'
+  });
+}
+
 export function itemGetAll(listId) {
   return api({
     url: `/item/checklist/${listId}`,

@@ -324,7 +324,7 @@ const ListForm = ({ initialValues, op, successCallback = () => {} }) => {
                           required
                           value={formValues.attributes[index].type}
                           onChange={e => handleAttrChange(e, index, 'type')}
-                          disabled={index === 0 || op === 'U'}
+                          disabled={index === 0 || attribute.op != 'C'}
                         >
                           <MenuItem value={1}>{typeNames[1]}</MenuItem>
                           <MenuItem value={2}>{typeNames[2]}</MenuItem>

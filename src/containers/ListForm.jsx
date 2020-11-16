@@ -97,11 +97,19 @@ const ListForm = ({ initialValues, op, successCallback = () => {} }) => {
   };
 
   const removeAttribute = index => {
-    setFormValues(prev => {
-      const newValues = { ...prev };
-      newValues.attributes.splice(index, 1);
-      return newValues;
-    });
+    if (op === 'C') {
+      setFormValues(prev => {
+        const newValues = { ...prev };
+        newValues.attributes.splice(index, 1);
+        return newValues;
+      });
+    } else if (op === 'U') {
+      setFormValues(prev => {
+        const newValues = { ...prev };
+        newValues.attributes[index].op = 'D';
+        return newValues;
+      });
+    }
   };
 
   const onSubmit = async e => {
@@ -129,9 +137,6 @@ const ListForm = ({ initialValues, op, successCallback = () => {} }) => {
             'Lista criada com sucesso! Você será redirecionado...'
           );
           setTimeout(() => {
-            // props.appStore.actions.setList(data, () =>
-            //   router.push(`/list/${data.id}`)
-            // );
             successCallback(data);
           }, 3000);
         })
@@ -151,9 +156,6 @@ const ListForm = ({ initialValues, op, successCallback = () => {} }) => {
             'Lista atualizada com sucesso! Você será redirecionado...'
           );
           setTimeout(() => {
-            // props.appStore.actions.setList(data, () =>
-            //   router.push(`/list/${data.id}`)
-            // );
             successCallback(data);
           }, 3000);
         })
@@ -251,64 +253,74 @@ const ListForm = ({ initialValues, op, successCallback = () => {} }) => {
               Campos dos itens dessa lista
             </Typography>
           </Box>
-          {formValues.attributes.map((attribute, index) => (
-            <Box mt={index > 0 ? 2 : 0} key={index}>
-              <Grid container spacing={2}>
-                <Grid item xs>
-                  <TextValidator
-                    label="Nome do campo"
-                    name={`attributes[${index}][title]`}
-                    id={`attributes-${index}-title`}
-                    type="text"
-                    variant="filled"
-                    required
-                    fullWidth
-                    validators={['required', 'maxStringLength:45']}
-                    errorMessages={['Insira um nome', 'Máximo 45 caracteres']}
-                    value={formValues.attributes[index].title}
-                    onChange={e => handleAttrChange(e, index, 'title')}
-                    disabled={index === 0}
-                  />
-                </Grid>
-                <Grid item xs>
-                  <FormControl
-                    variant="filled"
-                    fullWidth
-                    className={classes.formControl}
-                  >
-                    <InputLabel id={`attributes-${index}-type-label`}>
-                      Tipo
-                    </InputLabel>
-                    <Select
-                      labelId={`attributes-${index}-type-label`}
-                      name={`attributes[${index}][type]`}
-                      id={`attributes-${index}-type`}
-                      required
-                      value={formValues.attributes[index].type}
-                      onChange={e => handleAttrChange(e, index, 'type')}
-                      disabled={index === 0}
-                    >
-                      <MenuItem value={1}>{typeNames[1]}</MenuItem>
-                      <MenuItem value={2}>{typeNames[2]}</MenuItem>
-                      <MenuItem value={3}>{typeNames[3]}</MenuItem>
-                      <MenuItem value={4}>{typeNames[4]}</MenuItem>
-                      <MenuItem value={5}>{typeNames[5]}</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item>
-                  <IconButton
-                    aria-label="Remover campo"
-                    style={{ visibility: index > 0 ? 'visible' : 'hidden' }}
-                    disabled={index === 0}
-                    onClick={() => removeAttribute(index)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Grid>
-              </Grid>
-            </Box>
-          ))}
+          {!!formValues.attributes &&
+            formValues.attributes.map((attribute, index) => {
+              if (attribute.op === 'D') {
+                return null;
+              }
+
+              return (
+                <Box mt={index > 0 ? 2 : 0} key={index}>
+                  <Grid container spacing={2}>
+                    <Grid item xs>
+                      <TextValidator
+                        label="Nome do campo"
+                        name={`attributes[${index}][title]`}
+                        id={`attributes-${index}-title`}
+                        type="text"
+                        variant="filled"
+                        required
+                        fullWidth
+                        validators={['required', 'maxStringLength:45']}
+                        errorMessages={[
+                          'Insira um nome',
+                          'Máximo 45 caracteres'
+                        ]}
+                        value={formValues.attributes[index].title}
+                        onChange={e => handleAttrChange(e, index, 'title')}
+                        disabled={index === 0}
+                      />
+                    </Grid>
+                    <Grid item xs>
+                      <FormControl
+                        variant="filled"
+                        fullWidth
+                        className={classes.formControl}
+                      >
+                        <InputLabel id={`attributes-${index}-type-label`}>
+                          Tipo
+                        </InputLabel>
+                        <Select
+                          labelId={`attributes-${index}-type-label`}
+                          name={`attributes[${index}][type]`}
+                          id={`attributes-${index}-type`}
+                          required
+                          value={formValues.attributes[index].type}
+                          onChange={e => handleAttrChange(e, index, 'type')}
+                          disabled={index === 0 || op === 'U'}
+                        >
+                          <MenuItem value={1}>{typeNames[1]}</MenuItem>
+                          <MenuItem value={2}>{typeNames[2]}</MenuItem>
+                          <MenuItem value={3}>{typeNames[3]}</MenuItem>
+                          <MenuItem value={4}>{typeNames[4]}</MenuItem>
+                          <MenuItem value={5}>{typeNames[5]}</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item>
+                      <IconButton
+                        aria-label="Remover campo"
+                        style={{ visibility: index > 0 ? 'visible' : 'hidden' }}
+                        disabled={index === 0}
+                        onClick={() => removeAttribute(index)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                </Box>
+              );
+            })}
           <Box ml="auto" mb={4} mt={1}>
             <Button
               type="button"

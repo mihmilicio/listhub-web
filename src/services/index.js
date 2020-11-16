@@ -30,10 +30,25 @@ export function listCreate(data) {
   });
 }
 
+export function listUpdate(data) {
+  return api({
+    url: `/checklist/${data.id}`,
+    method: 'PUT',
+    data
+  });
+}
+
 export function listGetOne(listId) {
   return api({
     url: `/checklist/${listId}`,
     method: 'GET'
+  });
+}
+
+export function listDelete(listId) {
+  return api({
+    url: `/checklist/${listId}`,
+    method: 'DELETE'
   });
 }
 

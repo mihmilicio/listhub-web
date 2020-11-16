@@ -6,7 +6,7 @@ export const defaultValues = {
   5: null
 };
 
-export const names = {
+export const typeNames = {
   1: 'Texto',
   2: 'Número',
   3: 'Sim / Não',

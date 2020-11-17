@@ -27,7 +27,9 @@ const NewList = props => {
   }, [props.appStore?.state?.userId]);
 
   const onListCreated = data => {
-    props.appStore.actions.setList(data, router.push(`/list/${data.id}`));
+    props.appStore.actions.setList(data, () => {
+      router.push(`/list/${data.id}`);
+    });
   };
 
   return (

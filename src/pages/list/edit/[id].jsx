@@ -36,7 +36,9 @@ const ListEdit = props => {
   }, [props.appStore?.state?.currentList, id]);
 
   const onListUpdated = data => {
-    props.appStore.actions.setList(data, router.push(`/list/${data.id}`));
+    props.appStore.actions.setList(data, () => {
+      router.push(`/list/${data.id}`);
+    });
   };
 
   if (initialValues == null) {
